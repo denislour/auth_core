@@ -27,5 +27,5 @@ class JWTHandler:
             algorithm=self.algorithm
         )
 
-    def verify_token(self, token: str) -> dict:
+    def decode_token(self, token: str) -> dict:
         return jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
