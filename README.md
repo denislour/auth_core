@@ -33,26 +33,31 @@ pip install fastapi-auth-core
 
 ## 🚀 Quick Start
 
-### Middleware Configuration
+### Service Configuration
 
 ```python
 from fastapi import FastAPI
-from auth_core import PermissionMiddleware, AuthService
+from auth_core import requires_permissions
+from auth_core.services.auth import AuthService
+from auth_core.security.jwt import JWTHandler
 
 app = FastAPI()
 
-# Initialize auth service
-auth_service = AuthService()
+@app.on_event("startup")
+async def startup():
+    user_repo = PostgresUserRepository()
+    role_repo = PostgresRoleRepository()
+    permission_repo = PostgresPermissionRepository()
 
-# Configure middleware
-permission_middleware = PermissionMiddleware()
-permission_middleware.configure(
-    auth_service=auth_service,
-    get_current_user=auth_service.get_current_user
-)
+    jwt_handler = JWTHandler(secret_key="your-secret-key")
 
-# Add middleware to application
-app.add_middleware(permission_middleware)
+    AuthService(
+        user_repository=user_repo,
+        role_repository=role_repo,
+        permission_repository=permission_repo,
+        jwt_handler=jwt_handler,
+        token_expire_minutes=30
+    )
 ```
 
 ### Protecting Endpoints
@@ -63,12 +68,12 @@ from auth_core import requires_permissions
 @app.get("/users")
 @requires_permissions(["users:read"])
 async def get_users():
-    return {"message": "Access granted"}
+    return {"message": "Access granted to read users"}
 
 @app.post("/users")
 @requires_permissions(["users:create"])
-async def create_user(user_data: UserCreate):
-    return {"message": "User created"}
+async def create_user():
+    return {"message": "Access granted to create user"}
 ```
 
 ## 📚 Documentation

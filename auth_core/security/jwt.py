@@ -14,13 +14,13 @@ class JWTHandler:
         expires_delta: timedelta | None = None
     ) -> str:
         expire = datetime.utcnow() + (expires_delta or timedelta(minutes=15))
-        
+
         payload = JWTPayload(
             sub=subject,
             exp=expire,
             permissions=permissions
         )
-        
+
         return jwt.encode(
             payload.model_dump(exclude_none=True),
             self.secret_key,
