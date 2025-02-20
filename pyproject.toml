@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "auth-core"
+version = "0.1.0"
+description = ""
+authors = ["Lektor <denislour@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "^0.109.0"
+python-jose = { extras = ["cryptography"], version = "^3.3.0" }
+passlib = { extras = ["bcrypt"], version = "^1.7.4" }
+python-multipart = "^0.0.7"
+pydantic = { extras = ["email"], version = "^2.5.3" }
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
